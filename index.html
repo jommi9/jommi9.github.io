@@ -1,98 +1,502 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
-	<title>OtaSwengi Karaoke Nightclub - Ravintolasta</title>
-	<meta property="og:url"                content="http://otaswengi.club" />
-	<meta property="og:title"              content="OtaSwengi Karaoke Nightclub - Ravintolasta" />
-	<meta property="og:description"        content="Himmeli 17 SILLIS @ RANTSU" />
-	<meta property="og:image"              content="http://otaswengi.club/kuvat/ikoni.png" />
-	<meta name="copyright" content="Copyright © 2017 OtaSwengi">
-	<meta name="author" content="Otawengi">
-	<meta name="description" content="Otaniemen paras karaoke Nightclub, RANTASAUNA ESPOOSSA">
-	<meta name="keywords" content="OtaSwengi,Karaoke,Nightclub,Paras,Espoo">
-	<link rel="icon" href="http://www.swengi.fi/favicon.ico" type="image/x-icon"> 
-	<link rel="shortcut icon" href="http://www.swengi.fi/favicon.ico" type="image/ico">
-	<link type="text/css" rel="stylesheet" href="/swengistyle.css">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>jommi9 Hotel</title>
+<meta name="description" content="Public GitHub projects of jommi9, browsed like a Habbo Hotel navigator.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sky-top: #7fb7e8;
+    --sky-bottom: #2d5a92;
+    --floor: #3a2c1e;
+    --floor-alt: #4b3a28;
+    --chrome: #4b6a8a;
+    --chrome-dark: #2d4660;
+    --chrome-light: #7a9cbd;
+    --paper: #ece9df;
+    --paper-dark: #d9d4c4;
+    --ink: #1c1c1c;
+    --muted: #6a6a6a;
+    --go: #5fbf4a;
+    --go-dark: #2f7a21;
+    --tab-off: #6f8fae;
+    --bar: #6fd15a;
+    --bar-mid: #f0b43c;
+    --bar-full: #e45b4c;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { margin: 0; height: 100%; }
+
+  body {
+    font-family: Verdana, Tahoma, Geneva, sans-serif;
+    font-size: 11px;
+    color: var(--ink);
+    background: linear-gradient(var(--sky-top), var(--sky-bottom) 70%, var(--sky-bottom));
+    min-height: 100%;
+    position: relative;
+    overflow-x: hidden;
+    -webkit-font-smoothing: none;
+    image-rendering: pixelated;
+  }
+
+  /* isometric-ish floor at the bottom of the hotel view */
+  body::after {
+    content: "";
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    height: 72px;
+    background:
+      repeating-linear-gradient(90deg, var(--floor) 0 32px, var(--floor-alt) 32px 64px);
+    border-top: 3px solid #1a120b;
+    z-index: 0;
+  }
+
+  .hotel {
+    position: relative;
+    z-index: 1;
+    max-width: 560px;
+    margin: 40px auto 110px;
+    padding: 0 16px;
+  }
+
+  /* --- Habbo window chrome --- */
+  .win {
+    background: var(--paper);
+    border: 2px solid #000;
+    box-shadow:
+      inset 2px 2px 0 #fff,
+      inset -2px -2px 0 var(--paper-dark),
+      0 0 0 2px var(--chrome-dark),
+      6px 6px 0 rgba(0,0,0,.35);
+  }
+
+  .win-title {
+    background: var(--chrome);
+    border-bottom: 2px solid #000;
+    box-shadow: inset 2px 2px 0 var(--chrome-light), inset -2px -2px 0 var(--chrome-dark);
+    color: #fff;
+    font-family: 'Silkscreen', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 7px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-shadow: 1px 1px 0 #000;
+  }
+
+  .close {
+    width: 16px; height: 16px;
+    background: var(--paper);
+    border: 1px solid #000;
+    box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 var(--paper-dark);
+    color: #000;
+    font-family: 'Silkscreen', monospace;
+    font-size: 10px;
+    line-height: 13px;
+    text-align: center;
+    text-shadow: none;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  /* --- tabs --- */
+  .tabs {
+    display: flex;
+    gap: 3px;
+    padding: 6px 6px 0;
+    background: var(--chrome-dark);
+    border-bottom: 2px solid #000;
+  }
+
+  .tab {
+    font-family: 'Silkscreen', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    padding: 5px 10px 4px;
+    background: var(--tab-off);
+    color: #fff;
+    border: 1px solid #000;
+    border-bottom: none;
+    cursor: pointer;
+    text-shadow: 1px 1px 0 #000;
+    box-shadow: inset 1px 1px 0 var(--chrome-light);
+  }
+
+  .tab.on {
+    background: var(--paper);
+    color: var(--ink);
+    text-shadow: none;
+    box-shadow: inset 1px 1px 0 #fff;
+    position: relative;
+    top: 2px;
+  }
+
+  /* --- search --- */
+  .toolbar {
+    display: flex;
+    gap: 6px;
+    padding: 8px;
+    border-bottom: 1px solid var(--paper-dark);
+  }
+
+  .toolbar input {
+    flex: 1;
+    font: inherit;
+    padding: 4px 6px;
+    border: 1px solid #000;
+    box-shadow: inset 1px 1px 0 #999;
+    background: #fff;
+    outline: none;
+  }
+
+  .toolbar select {
+    font: inherit;
+    border: 1px solid #000;
+    background: #fff;
+    padding: 3px 4px;
+  }
+
+  /* --- room list --- */
+  .rooms {
+    list-style: none;
+    margin: 0;
+    padding: 4px 0;
+    max-height: 62vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--chrome) var(--paper-dark);
+  }
+
+  .room {
+    display: grid;
+    grid-template-columns: 24px 1fr auto auto;
+    gap: 8px;
+    align-items: center;
+    padding: 6px 8px;
+    border-bottom: 1px dotted #b8b3a2;
+  }
+
+  .room:nth-child(odd) { background: #f4f2ea; }
+  .room:hover { background: #fff9c9; }
+
+  .door {
+    width: 20px; height: 24px;
+    position: relative;
+    background: var(--lang, #888);
+    border: 2px solid #000;
+    box-shadow: inset 2px 2px 0 rgba(255,255,255,.45), inset -2px -2px 0 rgba(0,0,0,.35);
+  }
+  .door::after {
+    content: "";
+    position: absolute;
+    right: 3px; top: 9px;
+    width: 3px; height: 3px;
+    background: #ffe36a;
+    border: 1px solid #000;
+  }
+
+  .meta { min-width: 0; }
+
+  .name, .desc { display: block; }
+
+  .name {
+    font-weight: bold;
+    font-size: 12px;
+    color: #203a58;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .desc {
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 2px;
+  }
+
+  .users {
+    font-family: 'Silkscreen', monospace;
+    font-size: 9px;
+    color: #fff;
+    text-shadow: 1px 1px 0 #000;
+    background: var(--bar);
+    border: 1px solid #000;
+    padding: 3px 6px 2px;
+    min-width: 34px;
+    text-align: center;
+    box-shadow: inset 1px 1px 0 rgba(255,255,255,.5);
+  }
+  .users.mid { background: var(--bar-mid); }
+  .users.full { background: var(--bar-full); }
+
+  .go {
+    font-family: 'Silkscreen', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    color: #fff;
+    text-shadow: 1px 1px 0 #000;
+    text-decoration: none;
+    background: var(--go);
+    border: 1px solid #000;
+    box-shadow: inset 1px 1px 0 #b6f0a5, inset -1px -1px 0 var(--go-dark), 0 2px 0 #000;
+    padding: 4px 9px 3px;
+    cursor: pointer;
+  }
+  .go:active { box-shadow: inset 1px 1px 0 var(--go-dark); transform: translateY(2px); }
+
+  .status {
+    padding: 6px 8px;
+    border-top: 2px solid var(--paper-dark);
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .status a { color: #203a58; }
+
+  .empty { padding: 24px; text-align: center; color: var(--muted); }
+
+  /* loading bar */
+  .load {
+    margin: 32px auto;
+    width: 220px;
+    height: 14px;
+    border: 2px solid #000;
+    background: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  .load::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 40%;
+    background: repeating-linear-gradient(90deg, var(--go) 0 8px, var(--go-dark) 8px 16px);
+    animation: slide 1s linear infinite;
+  }
+  @keyframes slide { from { transform: translateX(-100%); } to { transform: translateX(250%); } }
+
+  /* bottom hotel bar */
+  .bar {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    height: 44px;
+    z-index: 2;
+    background: var(--chrome);
+    border-top: 2px solid #000;
+    box-shadow: inset 0 2px 0 var(--chrome-light);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 12px;
+    color: #fff;
+    font-family: 'Silkscreen', monospace;
+    font-size: 9px;
+    text-shadow: 1px 1px 0 #000;
+    text-transform: uppercase;
+  }
+
+  .bar img {
+    width: 28px; height: 28px;
+    border: 2px solid #000;
+    background: #fff;
+    image-rendering: pixelated;
+  }
+
+  .bar a { color: #ffe36a; text-decoration: none; }
+  .bar .right { margin-left: auto; }
+
+  @media (max-width: 480px) {
+    .room { grid-template-columns: 24px 1fr auto; }
+    .users { display: none; }
+    .bar .right { display: none; }
+  }
+</style>
 </head>
+<body>
 
-<body class="reunus" cz-shortcut-listen="true">
-<table width="860" class="tausta" align="center" border="0">
-	<tbody><tr>
-		<td>
-            <a href="http://otaswengi.club/kuvat/swengibanner860x132.png" target="_self" title="Swengi Home"><img src="/kuvat/swengibanner860x132.png" width="860" height="132" border="0">
-</a>		</td>
-	</tr>
-	<tr>
-		<td>
-			<table class="navi" width="860" border="0" height="23">
-				<tbody><tr height="20">
-        			<td class="navi" width="120" height="20">Ravintolasta<br></td>
-        			<td class="navi" width="160" height="20"><a class="nav" href="" title="Ohjelmapalvelu">Ohjelmapalvelu</a><br></td>
-       				<td class="navi" width="90" height="20"><a class="nav" href="" title="Karaokelistat">Karaoke</a><br></td>
-        			<td class="navi" width="120" height="20"><a class="nav" href="" title="Tapahtumat">Tapahtumat</a><br></td>
-        			<td class="navi" width="120" height="20"><a class="nav" href="" title="Yhteydenotto/Pöytävaraukset">Yhteydenotto</a><br></td>
-        			<td class="navi" width="210" height="20"><a class="nav" href="" title="Ravintolakolmio-ryhmä">Ravintolakolmio-ryhmä</a><br></td>
-        			<td class="navi" width="40" height="20"><a class="nav" href=""><img src="./Swengi Karaoke Nightclub - Ravintolasta_files/english.gif" width="23" height="14" alt="English" border="0" hspace="1" title="English"></a><br></td>
-    			</tr>
-			</tbody></table>
-		</td>
-	</tr>
-</tbody></table>
-<table width="860" align="center" border="0">
-	<tbody><tr>
-		<td>
-			<table class="tausta" width="860" border="0">
-                <tbody><tr>
-                    <td class="musta" width="860">
-                        <!-- p align="center"><b><font size="4" color="red">Arkisin (keskiviikko, torstai) ilmainen sisäänpääsy klo 19 - 22.</font></b></p -->
-						
-                        <h1>Ravintolasta</h1>
-<p>Ravintola OtaSwengin historia alkaa vuodesta 1962, jolloin se perustettiin nimellä Budapest. Ravintolan nimi muutettiin Vivaksi vuonna 2000. Nykyinen nimi OtaSwengi otettiin käyttöön vuonna 2002.<br>
-Nykyään Karaoke Nightclub OtaSwengi on karaoken ja yökerhon huippuosaamista Otaniemen sydämessä.</p>
+<main class="hotel">
+  <section class="win" aria-label="Navigator">
+    <div class="win-title">
+      <span>Navigator</span>
+      <span class="close" title="There is no exit" aria-hidden="true">x</span>
+    </div>
 
-<p>Äänentoisto ravintolassa on huippuluokkaa ja asiakas voi valita itselleen karaokekappaleen laajasta valikoimasta, josta löytyy kappaleita suomeksi, englanniksi, ruotsiksi ja ranskaksi.<br>
-Uudistamme kappalevalikoimaamme säännöllisesti ja otamme mieluusti asiakkaidemme toiveita huomioon päivitysvaiheessa.</p>
-<p>Kokeneet karaokejuontajat ja dj:t, sekä ammattitaitoinen ravintolahenkilökunta takaavat varmasti onnistuneen illan asiakkaillemme.</p>
-<p>OtaSwengi palvelee keskiviikosta lauantaihin klo 12 - 18 ja meillä viihtyvät kaikenikäiset karaokelaulun ja yökerhomusiikin ystävät.</p>
-<p> ILMOTTAUDU !!!  https://goo.gl/forms/RKE0fVW9yEHKR2aA3<p>
-                    </td>
-                </tr>
-				<tr>
-                    <td class="plain" width="860">
-                        <p align="center"><img src="/kuvat/rav_02_tiski2_280x160.jpg" width="280" height="160" border="0" vspace="2" hspace="2" alt="Tiski"><img src="/kuvat/rav_03_lava_280x160.jpg" width="280" height="160" border="0" vspace="2" hspace="2" alt="Lava"><img src="/kuvat/rav_05_ylabaari_280x160.jpg" width="280" height="160" border="0" vspace="2" hspace="2" alt="Yläbaari"><img src="/kuvat/rav_04_sali_280x160.jpg" width="280" height="160" border="0" vspace="2" hspace="2" alt="Sali"><img src="/kuvat/singa_logo.png" width="280" height="160" border="0" vspace="2" hspace="2" alt="Tiski"></p>
-                    </td>
-				</tr>
+    <div class="tabs" role="tablist">
+      <button class="tab on" data-tab="own" role="tab">Public Rooms</button>
+      <button class="tab" data-tab="fork" role="tab">Forks</button>
+    </div>
 
-			</tbody>
+    <div class="toolbar">
+      <input id="q" type="search" placeholder="Search rooms..." aria-label="Search repositories">
+      <select id="sort" aria-label="Sort">
+        <option value="updated">Recent</option>
+        <option value="stars">Popular</option>
+        <option value="name">A-Z</option>
+      </select>
+    </div>
 
-		</table>
-						<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfwWHy5-9wbNYNMkCx8wWp9aVXxLh19OAsF3YjrhsK9zdGG3A/viewform?embedded=true" width="860" height="1400" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe></tbody></table>
+    <ul class="rooms" id="rooms">
+      <li class="load" aria-label="Loading"></li>
+    </ul>
 
-		</td>
-    </tr>
-						
-	<table class="tausta" width="860" align="center" border="0">
-	
-	
-	<tbody>
-		
-		<tr>
+    <div class="status">
+      <span id="count">Connecting to hotel...</span>
+      <a id="profile" href="https://github.com/jommi9" target="_blank" rel="noopener">github.com/jommi9</a>
+    </div>
+  </section>
+</main>
 
-        <td width="860">
-			<p align="center">
-			<b>Karaoke Nightclub OtaSwengi</b><br>
-			Rantasauna<br>
-			ESPOO VITTU<br>
-			0452772366<br>
-			www.swengi.fi</p>
-			<b>© Swengi</b>
-		</td>
-	</tr>
-</tbody></table>
+<footer class="bar">
+  <img id="avatar" alt="" src="" hidden>
+  <span id="who">jommi9</span>
+  <span class="right"><a href="https://github.com/jommi9/jommi9.github.io" target="_blank" rel="noopener">Room source</a></span>
+</footer>
 
+<script>
+(function () {
+  const USER = 'jommi9';
+  const API = 'https://api.github.com/users/' + USER;
+  const CACHE_KEY = 'hotel:' + USER;
+  const CACHE_TTL = 10 * 60 * 1000;
 
+  const LANG = {
+    JavaScript: '#f1e05a', TypeScript: '#3178c6', Python: '#3572a5', Solidity: '#aa6746',
+    Rust: '#dea584', Go: '#00add8', HTML: '#e34c26', CSS: '#563d7c', Shell: '#89e051',
+    Java: '#b07219', Kotlin: '#a97bff', Swift: '#f05138', 'C++': '#f34b7d', C: '#555555',
+    'C#': '#178600', Ruby: '#701516', PHP: '#4f5d95', Vue: '#41b883', Dart: '#00b4ab',
+    'Jupyter Notebook': '#da5b0b', Dockerfile: '#384d54', Lua: '#000080', Elixir: '#6e4a7e'
+  };
 
-<script type="text/javascript">( function(){ window.SIG_EXT = {}; } )()</script><span style="margin: 0px auto; border: 2px dotted rgb(255, 165, 0); position: absolute; z-index: 2147483647; visibility: hidden; left: 342px; width: 0px; top: 286px; height: 0px;"></span><span style="z-index: 2147483647; position: absolute; visibility: hidden; left: 327px; width: 50px; top: 271px; height: 20px; font-size: 10px; color: black;"></span><div></div>
-<script type="text/javascript">( function(){ window.SIG_EXT = {}; } )()</script></body>
+  const $rooms = document.getElementById('rooms');
+  const $count = document.getElementById('count');
+  const $q = document.getElementById('q');
+  const $sort = document.getElementById('sort');
+  let repos = [];
+  let tab = 'own';
 
+  function cacheGet() {
+    try {
+      const raw = localStorage.getItem(CACHE_KEY);
+      if (!raw) return null;
+      const { t, data } = JSON.parse(raw);
+      return Date.now() - t < CACHE_TTL ? data : null;
+    } catch (e) { return null; }
+  }
 
-<div></div></html>
+  function cacheSet(data) {
+    try { localStorage.setItem(CACHE_KEY, JSON.stringify({ t: Date.now(), data })); } catch (e) {}
+  }
+
+  async function fetchAll() {
+    const out = [];
+    for (let page = 1; page <= 10; page++) {
+      const res = await fetch(API + '/repos?type=public&per_page=100&page=' + page, {
+        headers: { Accept: 'application/vnd.github+json' }
+      });
+      if (!res.ok) throw new Error(res.status === 403 ? 'Hotel is full (API rate limit). Try again later.' : 'Could not reach the hotel (' + res.status + ').');
+      const batch = await res.json();
+      out.push(...batch);
+      if (batch.length < 100) break;
+    }
+    return out.map(r => ({
+      name: r.name,
+      desc: r.description || '',
+      url: r.html_url,
+      stars: r.stargazers_count,
+      lang: r.language,
+      fork: r.fork,
+      updated: r.pushed_at,
+      archived: r.archived
+    }));
+  }
+
+  async function fetchProfile() {
+    try {
+      const res = await fetch(API);
+      if (!res.ok) return;
+      const u = await res.json();
+      const img = document.getElementById('avatar');
+      img.src = u.avatar_url + '&s=56';
+      img.hidden = false;
+      document.getElementById('who').textContent = u.name || u.login;
+    } catch (e) {}
+  }
+
+  function usersClass(stars) {
+    if (stars >= 25) return 'users full';
+    if (stars >= 5) return 'users mid';
+    return 'users';
+  }
+
+  function esc(s) {
+    return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+
+  function render() {
+    const q = $q.value.trim().toLowerCase();
+    let list = repos.filter(r => (tab === 'fork') === r.fork);
+    if (q) list = list.filter(r => (r.name + ' ' + r.desc + ' ' + (r.lang || '')).toLowerCase().includes(q));
+
+    const sort = $sort.value;
+    list.sort((a, b) =>
+      sort === 'stars' ? b.stars - a.stars || a.name.localeCompare(b.name) :
+      sort === 'name' ? a.name.localeCompare(b.name) :
+      b.updated.localeCompare(a.updated)
+    );
+
+    if (!list.length) {
+      $rooms.innerHTML = '<li class="empty">No rooms here.</li>';
+    } else {
+      $rooms.innerHTML = list.map(r => `
+        <li class="room">
+          <span class="door" style="--lang:${LANG[r.lang] || '#8a8a8a'}" title="${esc(r.lang || 'Unknown')}"></span>
+          <span class="meta">
+            <span class="name">${esc(r.name)}${r.archived ? ' <small>(closed)</small>' : ''}</span>
+            <span class="desc">${esc(r.desc || (r.lang ? r.lang + ' room' : 'No description'))}</span>
+          </span>
+          <span class="${usersClass(r.stars)}" title="${r.stars} stars">${r.stars}</span>
+          <a class="go" href="${esc(r.url)}" target="_blank" rel="noopener">Go</a>
+        </li>`).join('');
+    }
+
+    const total = repos.filter(r => (tab === 'fork') === r.fork).length;
+    $count.textContent = list.length === total ? total + ' rooms' : list.length + ' of ' + total + ' rooms';
+  }
+
+  document.querySelectorAll('.tab').forEach(btn => btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(b => b.classList.toggle('on', b === btn));
+    tab = btn.dataset.tab;
+    render();
+  }));
+  $q.addEventListener('input', render);
+  $sort.addEventListener('change', render);
+
+  (async () => {
+    fetchProfile();
+    const cached = cacheGet();
+    if (cached) { repos = cached; render(); return; }
+    try {
+      repos = await fetchAll();
+      cacheSet(repos);
+      render();
+    } catch (e) {
+      $rooms.innerHTML = '<li class="empty">' + esc(e.message) + '</li>';
+      $count.textContent = 'Disconnected';
+    }
+  })();
+})();
+</script>
+</body>
+</html>
